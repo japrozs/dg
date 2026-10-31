@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@layer base {
+	html,
+	body {
+		margin: 0;
+		padding: 0;
+	}
+
+	body {
+		font-family: "Times New Roman", Times, serif;
+		font-size: 1.05em;
+		font-style: italic;
+		font-weight: 400;
+		line-height: 1.2;
+	}
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Focus */
+
+*:focus-visible {
+	outline: 1.5px solid #66ccff;
+	outline-offset: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Text selection */
+
+::selection {
+	background-color: oklch(68.5% 0.169 237.323 / 15%);
+	color: inherit;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+::-moz-selection {
+	background-color: oklch(68.5% 0.169 237.323 / 15%);
+	color: inherit;
+}
+
+/* Links */
+
+.link-blue {
+	color: #0086e9;
+	text-decoration: none;
+}
+
+.link-blue:hover {
+	background-color: #0086e9;
+	color: #fff;
+	text-decoration: none;
 }
