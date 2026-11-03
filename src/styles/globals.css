@@ -37,10 +37,186 @@ body {
 	}
 }
 
+/* Classic Macintosh window */
+
+.retro-window {
+	--retro-gray: #dddddd;
+	--retro-light: #ffffff;
+	--retro-dark: #777777;
+	--retro-black: #111111;
+
+	position: relative;
+
+	display: flex;
+	flex-direction: column;
+
+	width: fit-content;
+	max-width: 100%;
+	min-width: 0;
+
+	padding: 3px;
+	background: var(--retro-gray);
+	border: 1px solid var(--retro-black);
+
+	/* Simple external shadow, no extra layers */
+	box-shadow: 2px 2px 0 #aaa;
+
+	font-family: Courier, "Chicago", "Geneva", monospace;
+	color: #111111;
+}
+
+/* Title bar */
+
+.retro-titlebar {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+
+	height: 20px;
+	min-height: 20px;
+	padding: 2px 3px;
+
+	background: var(--retro-gray);
+}
+
+.retro-title-lines {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+
+	height: 14px;
+	min-width: 0;
+
+	background: repeating-linear-gradient(
+		to bottom,
+		#777777 0px,
+		#777777 1px,
+		#dddddd 1px,
+		#dddddd 3px
+	);
+}
+
+.retro-title {
+	display: block;
+	max-width: 90%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
+	padding: 0 8px;
+	background: var(--retro-gray);
+
+	font-family: Courier, Arial, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 14px;
+	letter-spacing: 0;
+}
+
+/* Window controls */
+
+.retro-close,
+.retro-zoom {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 13px;
+
+	width: 13px;
+	height: 13px;
+	padding: 0;
+
+	background: #dddddd;
+	border: 1px solid #222222;
+
+	box-shadow:
+		inset 1px 1px 0 #ffffff,
+		inset -1px -1px 0 #777777;
+}
+
+.retro-close {
+	cursor: pointer;
+}
+
+.retro-close:hover {
+	background: #bbbbbb;
+}
+
+.retro-close span,
+.retro-zoom span {
+	display: block;
+	width: 6px;
+	height: 6px;
+
+	border: 1px solid #777777;
+	background: #eeeeee;
+}
+
+.retro-close:active {
+	box-shadow:
+		inset 1px 1px 0 #555555,
+		inset -1px -1px 0 #ffffff;
+}
+
+/* Image area */
+
+.retro-content {
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-start;
+
+	min-width: 0;
+	overflow: hidden;
+
+	border: 1px solid #111111;
+	background: #dff4e1;
+}
+
+.retro-image {
+	display: block;
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	object-fit: contain;
+}
+
+.retro-image-home {
+	max-height: 55dvh;
+}
+
+.retro-image-project {
+	max-height: 65dvh;
+}
+
+/* Responsive */
+
 @media (min-width: 768px) {
 	html,
 	body {
 		height: 100%;
 		overflow: hidden;
+	}
+
+	.retro-image-home {
+		max-height: calc(100dvh - 285px);
+	}
+
+	.retro-image-project {
+		max-height: calc(100dvh - 105px);
+	}
+}
+
+@media (max-width: 767px) {
+	.retro-title {
+		font-size: 9px;
+	}
+
+	.retro-image-home {
+		max-height: 55dvh;
+	}
+
+	.retro-image-project {
+		max-height: 65dvh;
 	}
 }

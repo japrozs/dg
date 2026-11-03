@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { MdArrowOutward } from "react-icons/md";
 
 const projects = [
 	{ image: "/img/IMG_0710.JPEG" },
@@ -23,7 +24,7 @@ const projects = [
 const DEFAULT_IMAGE = "/img/pic-with-bg.png";
 
 const EMAIL = "abc@test.net";
-const INSTAGRAM = "https://instagram.com/atomuvrz";
+const INSTAGRAM = "https://www.instagram.com/atomuvrz/";
 
 function formatDate(date: Date) {
 	return date.toLocaleString("en-US", {
@@ -63,6 +64,7 @@ function extractColors(src: string, colorCount: number): Promise<string[]> {
 		image.onload = () => {
 			try {
 				const canvas = document.createElement("canvas");
+
 				const ctx = canvas.getContext("2d", {
 					willReadFrequently: true,
 				});
@@ -146,6 +148,7 @@ function extractColors(src: string, colorCount: number): Promise<string[]> {
 					});
 
 					if (distinct) selected.push(color);
+
 					if (selected.length >= colorCount) break;
 				}
 
@@ -190,6 +193,126 @@ function extractColors(src: string, colorCount: number): Promise<string[]> {
 	});
 }
 
+function RetroWindow({
+	src,
+	alt,
+	isHome,
+	onClose,
+}: {
+	src: string;
+	alt: string;
+	isHome: boolean;
+	onClose: () => void;
+}) {
+	return (
+		<div className="retro-window">
+			<div className="retro-titlebar">
+				<button
+					type="button"
+					onClick={onClose}
+					className="retro-close"
+					aria-label="Return to home"
+					title="Return to home"
+				>
+					<span />
+				</button>
+
+				<div className="retro-title-lines">
+					<span className="retro-title">domanique-gibson.com</span>
+				</div>
+
+				<div className="retro-zoom" aria-hidden="true">
+					<span />
+				</div>
+			</div>
+
+			<div className="retro-content">
+				<img
+					src={src}
+					alt={alt}
+					className={`retro-image ${
+						isHome ? "retro-image-home" : "retro-image-project"
+					}`}
+				/>
+			</div>
+		</div>
+	);
+}
+
+function ContactLinks() {
+	const [emailCopied, setEmailCopied] = useState(false);
+
+	useEffect(() => {
+		if (!emailCopied) return;
+
+		const timeout = setTimeout(() => {
+			setEmailCopied(false);
+		}, 2000);
+
+		return () => clearTimeout(timeout);
+	}, [emailCopied]);
+
+	const handleCopyEmail = async () => {
+		try {
+			if (navigator.clipboard && window.isSecureContext) {
+				await navigator.clipboard.writeText(EMAIL);
+			} else {
+				// Fallback for browsers without Clipboard API access.
+				const textarea = document.createElement("textarea");
+				textarea.value = EMAIL;
+				textarea.style.position = "fixed";
+				textarea.style.opacity = "0";
+
+				document.body.appendChild(textarea);
+				textarea.focus();
+				textarea.select();
+
+				const success = document.execCommand("copy");
+
+				document.body.removeChild(textarea);
+
+				if (!success) {
+					throw new Error("Copy failed");
+				}
+			}
+
+			setEmailCopied(true);
+		} catch (error) {
+			console.error("Failed to copy email:", error);
+			setEmailCopied(false);
+		}
+	};
+
+	return (
+		<nav
+			aria-label="Contact and social links"
+			className="relative z-20 mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-base text-red-500"
+		>
+			<button
+				type="button"
+				onClick={handleCopyEmail}
+				className="cursor-copy hover:bg-red-500 hover:text-white"
+				aria-label="Copy Domanique Gibson's email address"
+			>
+				{emailCopied ? "[Copied]" : "Email"}
+			</button>
+
+			<a
+				href={INSTAGRAM}
+				target="_blank"
+				rel="noopener noreferrer"
+				className="inline-flex items-center gap-0.5 hover:bg-red-500 hover:text-white"
+			>
+				Instagram
+				<MdArrowOutward
+					aria-hidden="true"
+					className="-mt-0.5 ml-0.5 shrink-0 md:-mt-1"
+				/>
+			</a>
+		</nav>
+	);
+}
+
 export default function Home() {
 	const [date, setDate] = useState("Monday, November 2, 2026 03:07 PM");
 
@@ -221,9 +344,7 @@ export default function Home() {
 				),
 			);
 
-			if (!cancelled) {
-				setPalettes(results);
-			}
+			if (!cancelled) setPalettes(results);
 		}
 
 		loadPalettes();
@@ -238,22 +359,25 @@ export default function Home() {
 			? projects[selectedProject].image
 			: DEFAULT_IMAGE;
 
+	const resetProject = () => setSelectedProject(null);
+
 	const header = (
 		<header className="text-right">
 			<button
 				type="button"
-				onClick={() => setSelectedProject(null)}
+				onClick={resetProject}
 				className="mb-1 ml-auto block w-max cursor-pointer bg-red-500 px-1 py-0.5 text-white hover:animate-[blink_0.2s_steps(1,end)_infinite]"
 			>
 				Domanique Gibson
 			</button>
+
 			<div className="leading-tight">{date}</div>
 		</header>
 	);
 
 	const paletteNavigation = (
 		<nav aria-label="Project images">
-			<ul className="flex flex-wrap items-center justify-end gap-2 p-0 md:flex-col md:items-end md:gap-2 lg:gap-2.5">
+			<ul className="flex flex-wrap items-center justify-end gap-2 p-0 md:flex-col md:items-end lg:gap-2.5">
 				{projects.map((project, index) => (
 					<li key={project.image}>
 						<button
@@ -294,6 +418,7 @@ export default function Home() {
 				alt="United States flag"
 				className="block h-auto w-14 object-contain sm:w-16 lg:w-20"
 			/>
+
 			<img
 				src="/img/trinidad-flag.png"
 				alt="Trinidad and Tobago flag"
@@ -303,31 +428,28 @@ export default function Home() {
 	);
 
 	return (
-		<main className="flex min-h-dvh w-full flex-col gap-5 overflow-x-hidden p-4 text-base leading-none md:grid md:h-dvh md:min-h-0 md:grid-cols-[55%_45%] md:gap-0 md:overflow-hidden md:p-5 lg:grid-cols-[60%_40%] lg:text-lg">
+		<main className="flex min-h-dvh w-full flex-col gap-5 overflow-x-hidden p-4 text-base leading-none md:grid md:h-dvh md:min-h-0 md:grid-cols-[55%_45%] md:gap-0 md:overflow-hidden md:p-5 lg:grid-cols-[60%_40%] lg:text-md">
 			{/* Mobile header */}
 			<div className="order-1 md:hidden">{header}</div>
 
 			{/* Main image */}
-			<section className="order-2 flex min-w-0 flex-col items-start md:order-1 md:min-h-0 md:overflow-hidden md:pr-4 md:pt-[22px] lg:pr-5">
+			<section className="relative order-2 flex min-w-0 flex-col items-start md:order-1 md:min-h-0 md:overflow-hidden md:pr-4 md:pt-[22px] lg:pr-5">
 				<div className="flex w-full min-w-0 flex-col items-start md:min-h-0 md:flex-1">
 					<div className="flex w-full justify-center md:min-h-0 md:justify-start">
-						<img
+						<RetroWindow
 							src={currentImage}
 							alt={
 								selectedProject !== null
 									? `Project ${selectedProject + 1}`
 									: "Domanique Gibson"
 							}
-							className={`block h-auto max-w-full object-contain ${
-								selectedProject === null
-									? "max-h-[55dvh] md:max-h-[calc(100dvh-240px)]"
-									: "max-h-[65dvh] md:max-h-[calc(100dvh-40px)]"
-							}`}
+							isHome={selectedProject === null}
+							onClose={resetProject}
 						/>
 					</div>
 
 					{selectedProject === null && (
-						<div className="mt-4 w-full max-w-[580px] text-left leading-[1.35] md:mt-4 md:shrink-0">
+						<div className="relative z-10 mt-4 w-full max-w-[580px] shrink-0 text-left leading-[1.35]">
 							<p className="text-sm sm:text-base">
 								Domanique Gibson is a graphic designer from
 								Chicago, now based in Atlanta. Her work spans
@@ -336,23 +458,7 @@ export default function Home() {
 								accepting commissions for new projects.
 							</p>
 
-							<div className="mt-3 flex items-center gap-4 text-sm sm:text-base">
-								<a
-									href={`mailto:${EMAIL}`}
-									className="underline underline-offset-2 hover:bg-red-500 hover:text-white"
-								>
-									Email
-								</a>
-
-								<a
-									href={INSTAGRAM}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="underline underline-offset-2 hover:bg-red-500 hover:text-white"
-								>
-									Instagram
-								</a>
-							</div>
+							<ContactLinks />
 						</div>
 					)}
 				</div>
@@ -369,7 +475,7 @@ export default function Home() {
 				<div className="mt-auto shrink-0 pt-6">{flags}</div>
 			</aside>
 
-			{/* Mobile palette navigation and flags */}
+			{/* Mobile navigation */}
 			<div className="order-3 flex flex-col gap-6 md:hidden">
 				{paletteNavigation}
 
