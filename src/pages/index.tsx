@@ -2,242 +2,379 @@
 
 import { useEffect, useState } from "react";
 
-const DESIGN_WIDTH = 1649;
-const DESIGN_HEIGHT = 928;
-
-type Slot = {
-	x: number;
-	y: number;
-	w: number;
-	h: number;
-};
-
-const artworks = [
-	"/img/IMG_6108.JPG",
-	"/img/IMG_5411.JPEG",
-	"/img/IMG_3035.JPG",
-	"/img/IMG_2896.JPEG",
-	"/img/IMG_3786.JPG",
-	"/img/IMG_4873.PNG",
-	"/img/IMG_1955.JPEG",
-	"/img/IMG_0710.JPEG",
-	"/img/IMG_2768.JPEG",
-	"/img/IMG_3015.JPG",
-	"/img/IMG_6107.JPG",
-	"/img/IMG_6445.JPEG",
-	"/img/IMG_4536.JPEG",
-	"/img/IMG_5321.JPG",
-	"/img/IMG_5325.JPG",
-	"/img/IMG_5332.JPG",
-	"/img/IMG_2143.JPEG",
-	"/img/IMG_5413.JPEG",
-	"/img/IMG_2895.JPEG",
-	"/img/IMG_2772.JPEG",
-	"/img/IMG_5321.JPG",
-	"/img/IMG_5411.JPEG",
-	"/img/IMG_6108.JPG",
-	"/img/IMG_3786.JPG",
-	"/img/IMG_1955.JPEG",
-	"/img/IMG_3015.JPG",
+const projects = [
+	{ image: "/img/IMG_0710.JPEG" },
+	{ image: "/img/IMG_1955.JPEG" },
+	{ image: "/img/IMG_2143.JPEG" },
+	{ image: "/img/IMG_2895.JPEG" },
+	{ image: "/img/IMG_3035.JPG" },
+	{ image: "/img/IMG_6108.JPG" },
+	{ image: "/img/IMG_6107.JPG" },
+	{ image: "/img/IMG_6445.JPEG" },
+	{ image: "/img/IMG_5411.JPEG" },
+	{ image: "/img/IMG_5413.JPEG" },
+	{ image: "/img/IMG_5325.JPG" },
+	{ image: "/img/IMG_5321.JPG" },
+	{ image: "/img/IMG_5332.JPG" },
+	{ image: "/img/IMG_4536.JPEG" },
+	{ image: "/img/IMG_4873.PNG" },
 ];
 
-function makeSlot(x1: number, y1: number, x2: number, y2: number): Slot {
-	return {
-		x: (x1 / DESIGN_WIDTH) * 100,
-		y: (y1 / DESIGN_HEIGHT) * 100,
-		w: ((x2 - x1) / DESIGN_WIDTH) * 100,
-		h: ((y2 - y1) / DESIGN_HEIGHT) * 100,
-	};
+const DEFAULT_IMAGE = "/img/pic-with-bg.png";
+
+const EMAIL = "abc@test.net";
+const INSTAGRAM = "https://instagram.com/atomuvrz";
+
+function formatDate(date: Date) {
+	return date.toLocaleString("en-US", {
+		timeZone: "America/New_York",
+		weekday: "long",
+		month: "long",
+		day: "numeric",
+		year: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+		hour12: true,
+	});
 }
 
-/*
- * Fixed artwork layout.
- * Every cell beneath the header contains an image.
- * Coordinates follow the original 1649 × 928 grid.
- */
-const imageSlots: Slot[] = [
-	// Row 2
-	makeSlot(32, 183, 429, 305),
-	makeSlot(429, 183, 825, 305),
-	makeSlot(825, 183, 1221, 305),
-	makeSlot(1221, 183, 1619, 305),
-
-	// Row 3
-	makeSlot(32, 305, 429, 412),
-	makeSlot(429, 305, 613, 412),
-	makeSlot(613, 305, 825, 412),
-	makeSlot(825, 305, 1221, 412),
-	makeSlot(1221, 305, 1619, 412),
-
-	// Row 4
-	makeSlot(32, 412, 429, 526),
-	makeSlot(429, 412, 613, 526),
-	makeSlot(613, 412, 825, 526),
-	makeSlot(825, 412, 1023, 526),
-	makeSlot(1023, 412, 1221, 526),
-	makeSlot(1221, 412, 1619, 526),
-
-	// Row 5
-	makeSlot(32, 526, 429, 650),
-	makeSlot(429, 526, 613, 650),
-	makeSlot(613, 526, 825, 650),
-	makeSlot(825, 526, 1023, 650),
-	makeSlot(1023, 526, 1221, 650),
-	makeSlot(1221, 526, 1619, 650),
-
-	// Row 6
-	makeSlot(32, 650, 429, 900),
-	makeSlot(429, 650, 613, 900),
-	makeSlot(613, 650, 825, 900),
-	makeSlot(825, 650, 1221, 900),
-	makeSlot(1221, 650, 1619, 900),
-];
-
-function AtlantaClock() {
-	const [time, setTime] = useState("");
-
-	useEffect(() => {
-		const update = () => {
-			setTime(
-				new Intl.DateTimeFormat("en-US", {
-					timeZone: "America/New_York",
-					hour: "numeric",
-					minute: "2-digit",
-					hour12: true,
-				}).format(new Date()),
-			);
-		};
-
-		update();
-
-		const interval = window.setInterval(update, 30000);
-
-		return () => window.clearInterval(interval);
-	}, []);
-
-	return <span>Atlanta — {time}</span>;
-}
-
-function GridLines() {
+function rgbToHex(r: number, g: number, b: number) {
 	return (
-		<svg
-			className="pointer-events-none absolute inset-0 z-20 h-full w-full"
-			viewBox="0 0 1649 928"
-			preserveAspectRatio="none"
-			aria-hidden="true"
-		>
-			<g fill="none" stroke="#63efff" strokeWidth="1">
-				{/* Horizontal lines */}
-				<path d="M0 26 H1649" />
-				<path d="M0 183 H1649" />
-				<path d="M0 305 H1649" />
-				<path d="M0 412 H1649" />
-				<path d="M825 526 H1649" />
-				<path d="M16 650 H1649" />
-				<path d="M0 900 H1649" />
-
-				{/* Vertical lines */}
-				<path d="M32 0 V928" />
-				<path d="M429 0 V928" />
-				<path d="M825 0 V928" />
-				<path d="M1221 0 V928" />
-				<path d="M1619 0 V928" />
-
-				{/* Smaller subdivisions */}
-				<path d="M613 305 V928" />
-				<path d="M1023 412 V650" />
-			</g>
-		</svg>
+		"#" +
+		[r, g, b]
+			.map((value) =>
+				Math.max(0, Math.min(255, Math.round(value)))
+					.toString(16)
+					.padStart(2, "0"),
+			)
+			.join("")
 	);
 }
 
+function getColorCount(index: number) {
+	return 3 + ((index * 7 + 2) % 3);
+}
+
+function extractColors(src: string, colorCount: number): Promise<string[]> {
+	return new Promise((resolve) => {
+		const fallback = Array<string>(colorCount).fill("#e5e5e5");
+		const image = new Image();
+
+		image.onload = () => {
+			try {
+				const canvas = document.createElement("canvas");
+				const ctx = canvas.getContext("2d", {
+					willReadFrequently: true,
+				});
+
+				if (!ctx) {
+					resolve(fallback);
+					return;
+				}
+
+				canvas.width = 100;
+				canvas.height = 100;
+
+				ctx.drawImage(image, 0, 0, 100, 100);
+
+				const { data } = ctx.getImageData(0, 0, 100, 100);
+
+				const buckets = new Map<
+					string,
+					{
+						r: number;
+						g: number;
+						b: number;
+						count: number;
+					}
+				>();
+
+				for (let i = 0; i < data.length; i += 4) {
+					if (data[i + 3] < 128) continue;
+
+					const r = data[i];
+					const g = data[i + 1];
+					const b = data[i + 2];
+
+					const qr = Math.min(255, Math.round(r / 24) * 24);
+					const qg = Math.min(255, Math.round(g / 24) * 24);
+					const qb = Math.min(255, Math.round(b / 24) * 24);
+
+					const key = `${qr},${qg},${qb}`;
+					const bucket = buckets.get(key);
+
+					if (bucket) {
+						bucket.r += r;
+						bucket.g += g;
+						bucket.b += b;
+						bucket.count++;
+					} else {
+						buckets.set(key, {
+							r,
+							g,
+							b,
+							count: 1,
+						});
+					}
+				}
+
+				const sorted = [...buckets.values()].sort(
+					(a, b) => b.count - a.count,
+				);
+
+				const selected: {
+					r: number;
+					g: number;
+					b: number;
+				}[] = [];
+
+				for (const bucket of sorted) {
+					const color = {
+						r: bucket.r / bucket.count,
+						g: bucket.g / bucket.count,
+						b: bucket.b / bucket.count,
+					};
+
+					const distinct = selected.every((existing) => {
+						const distance = Math.sqrt(
+							(color.r - existing.r) ** 2 +
+								(color.g - existing.g) ** 2 +
+								(color.b - existing.b) ** 2,
+						);
+
+						return distance > 42;
+					});
+
+					if (distinct) selected.push(color);
+					if (selected.length >= colorCount) break;
+				}
+
+				for (const bucket of sorted) {
+					if (selected.length >= colorCount) break;
+
+					const color = {
+						r: bucket.r / bucket.count,
+						g: bucket.g / bucket.count,
+						b: bucket.b / bucket.count,
+					};
+
+					const exists = selected.some((existing) => {
+						const distance = Math.sqrt(
+							(color.r - existing.r) ** 2 +
+								(color.g - existing.g) ** 2 +
+								(color.b - existing.b) ** 2,
+						);
+
+						return distance < 1;
+					});
+
+					if (!exists) selected.push(color);
+				}
+
+				const colors = selected.map((color) =>
+					rgbToHex(color.r, color.g, color.b),
+				);
+
+				while (colors.length < colorCount) {
+					colors.push("#e5e5e5");
+				}
+
+				resolve(colors);
+			} catch {
+				resolve(fallback);
+			}
+		};
+
+		image.onerror = () => resolve(fallback);
+		image.src = src;
+	});
+}
+
 export default function Home() {
-	return (
-		<main className="fixed inset-0 overflow-hidden bg-white text-black">
-			{/* Static artwork grid */}
-			<section
-				id="work"
-				aria-label="Selected artwork"
-				className="absolute inset-0 z-0"
+	const [date, setDate] = useState("Monday, November 2, 2026 03:07 PM");
+
+	const [selectedProject, setSelectedProject] = useState<number | null>(null);
+
+	const [palettes, setPalettes] = useState<string[][]>(
+		projects.map((_, index) =>
+			Array<string>(getColorCount(index)).fill("#e5e5e5"),
+		),
+	);
+
+	useEffect(() => {
+		const updateDate = () => setDate(formatDate(new Date()));
+
+		updateDate();
+
+		const interval = setInterval(updateDate, 1000);
+
+		return () => clearInterval(interval);
+	}, []);
+
+	useEffect(() => {
+		let cancelled = false;
+
+		async function loadPalettes() {
+			const results = await Promise.all(
+				projects.map((project, index) =>
+					extractColors(project.image, getColorCount(index)),
+				),
+			);
+
+			if (!cancelled) {
+				setPalettes(results);
+			}
+		}
+
+		loadPalettes();
+
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+
+	const currentImage =
+		selectedProject !== null
+			? projects[selectedProject].image
+			: DEFAULT_IMAGE;
+
+	const header = (
+		<header className="text-right">
+			<button
+				type="button"
+				onClick={() => setSelectedProject(null)}
+				className="mb-1 ml-auto block w-max cursor-pointer bg-red-500 px-1 py-0.5 text-white hover:animate-[blink_0.2s_steps(1,end)_infinite]"
 			>
-				{imageSlots.map((slot, index) => (
-					<div
-						key={index}
-						className="absolute overflow-hidden"
-						style={{
-							left: `${slot.x}%`,
-							top: `${slot.y}%`,
-							width: `${slot.w}%`,
-							height: `${slot.h}%`,
-						}}
-					>
+				Domanique Gibson
+			</button>
+			<div className="leading-tight">{date}</div>
+		</header>
+	);
+
+	const paletteNavigation = (
+		<nav aria-label="Project images">
+			<ul className="flex flex-wrap items-center justify-end gap-2 p-0 md:flex-col md:items-end md:gap-2 lg:gap-2.5">
+				{projects.map((project, index) => (
+					<li key={project.image}>
+						<button
+							type="button"
+							onClick={() => setSelectedProject(index)}
+							aria-label={`View image ${index + 1}`}
+							aria-pressed={selectedProject === index}
+							className={`flex cursor-pointer items-center justify-end gap-1 p-[2px] hover:bg-[#b6ff00] ${
+								selectedProject === index ? "bg-[#b6ff00]" : ""
+							}`}
+						>
+							<div className="flex items-center gap-[3px]">
+								{palettes[index].map((color, colorIndex) => (
+									<span
+										key={colorIndex}
+										aria-hidden="true"
+										className="block h-[15px] w-[15px] shrink-0 sm:h-[18px] sm:w-[18px] md:h-[15px] md:w-[15px] lg:h-[18px] lg:w-[18px]"
+										style={{ backgroundColor: color }}
+									/>
+								))}
+							</div>
+
+							<span
+								aria-hidden="true"
+								className="ml-1 block h-[5px] w-[5px] shrink-0 rounded-full bg-black"
+							/>
+						</button>
+					</li>
+				))}
+			</ul>
+		</nav>
+	);
+
+	const flags = (
+		<div className="flex shrink-0 items-center justify-end gap-2">
+			<img
+				src="/img/us-flag.png"
+				alt="United States flag"
+				className="block h-auto w-14 object-contain sm:w-16 lg:w-20"
+			/>
+			<img
+				src="/img/trinidad-flag.png"
+				alt="Trinidad and Tobago flag"
+				className="block h-auto w-12 object-contain sm:w-14 lg:w-18"
+			/>
+		</div>
+	);
+
+	return (
+		<main className="flex min-h-dvh w-full flex-col gap-5 overflow-x-hidden p-4 text-base leading-none md:grid md:h-dvh md:min-h-0 md:grid-cols-[55%_45%] md:gap-0 md:overflow-hidden md:p-5 lg:grid-cols-[60%_40%] lg:text-lg">
+			{/* Mobile header */}
+			<div className="order-1 md:hidden">{header}</div>
+
+			{/* Main image */}
+			<section className="order-2 flex min-w-0 flex-col items-start md:order-1 md:min-h-0 md:overflow-hidden md:pr-4 md:pt-[22px] lg:pr-5">
+				<div className="flex w-full min-w-0 flex-col items-start md:min-h-0 md:flex-1">
+					<div className="flex w-full justify-center md:min-h-0 md:justify-start">
 						<img
-							src={artworks[index]}
-							alt={`Selected artwork ${index + 1}`}
-							draggable={false}
-							className="block h-full w-full scale-[1.4] select-none object-cover"
+							src={currentImage}
+							alt={
+								selectedProject !== null
+									? `Project ${selectedProject + 1}`
+									: "Domanique Gibson"
+							}
+							className={`block h-auto max-w-full object-contain ${
+								selectedProject === null
+									? "max-h-[55dvh] md:max-h-[calc(100dvh-240px)]"
+									: "max-h-[65dvh] md:max-h-[calc(100dvh-40px)]"
+							}`}
 						/>
 					</div>
-				))}
+
+					{selectedProject === null && (
+						<div className="mt-4 w-full max-w-[580px] text-left leading-[1.35] md:mt-4 md:shrink-0">
+							<p className="text-sm sm:text-base">
+								Domanique Gibson is a graphic designer from
+								Chicago, now based in Atlanta. Her work spans
+								visual identities, album artwork, and creative
+								collaborations with music artists. Currently
+								accepting commissions for new projects.
+							</p>
+
+							<div className="mt-3 flex items-center gap-4 text-sm sm:text-base">
+								<a
+									href={`mailto:${EMAIL}`}
+									className="underline underline-offset-2 hover:bg-red-500 hover:text-white"
+								>
+									Email
+								</a>
+
+								<a
+									href={INSTAGRAM}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="underline underline-offset-2 hover:bg-red-500 hover:text-white"
+								>
+									Instagram
+								</a>
+							</div>
+						</div>
+					)}
+				</div>
 			</section>
 
-			{/* Header */}
-			<header className="pointer-events-none absolute inset-0 z-10">
-				{/* Logo */}
-				<div className="absolute left-[1.94%] top-[2.8%] h-[16.92%] w-[24.08%] overflow-hidden">
-					<img
-						src="/img/dominique-gibson-logo.png"
-						alt="Dominique Gibson"
-						draggable={false}
-						className="block h-full w-full object-contain object-left-top"
-					/>
+			{/* Desktop sidebar */}
+			<aside className="order-3 hidden min-h-0 min-w-0 flex-col overflow-hidden text-right md:order-2 md:flex md:pl-4 md:pt-[22px] lg:pl-5">
+				<div className="min-h-0 overflow-y-auto">
+					{header}
+
+					<div className="mt-5 md:mt-[23px]">{paletteNavigation}</div>
 				</div>
 
-				{/* Byline */}
-				<div className="absolute left-[26.02%] top-[2.8%] w-[24.01%] overflow-hidden">
-					<p className="m-0 font-serif text-[clamp(9px,1.22vw,21px)] leading-[1.12] italic">
-						Bronté Tolentino (b.1998), Graphic Designer based in
-						Toronto — Currently available for freelance work
-					</p>
-				</div>
+				<div className="mt-auto shrink-0 pt-6">{flags}</div>
+			</aside>
 
-				{/* Navigation */}
-				<nav
-					aria-label="Main navigation"
-					className="pointer-events-auto absolute left-[50.03%] top-[2.8%] flex h-[16.92%] w-[24.02%] flex-col items-end justify-between overflow-hidden font-mono text-[clamp(10px,1.15vw,19px)]"
-				>
-					<a
-						href="mailto:hello@example.com"
-						className="text-[#0086e9] hover:bg-[#0086e9] hover:text-white"
-					>
-						email
-					</a>
+			{/* Mobile palette navigation and flags */}
+			<div className="order-3 flex flex-col gap-6 md:hidden">
+				{paletteNavigation}
 
-					<a
-						href="#work"
-						className="text-[#0086e9] hover:bg-[#0086e9] hover:text-white"
-					>
-						work
-					</a>
-
-					<a
-						href="https://instagram.com"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="text-[#0086e9] hover:bg-[#0086e9] hover:text-white"
-					>
-						insta
-					</a>
-				</nav>
-
-				{/* Atlanta clock */}
-				<div className="absolute right-[1.82%] top-[0.7%] whitespace-nowrap font-serif text-[clamp(10px,1.2vw,21px)] leading-none italic">
-					<AtlantaClock />
-				</div>
-			</header>
-
-			{/* Original cyan grid */}
-			<GridLines />
+				<div className="pt-2">{flags}</div>
+			</div>
 		</main>
 	);
 }

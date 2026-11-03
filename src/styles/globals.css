@@ -1,34 +1,46 @@
 @import "tailwindcss";
 
-@theme {
-	--font-mono: Courier, "Courier New", monospace;
-	--font-serif: "Times New Roman", Times, serif;
+@font-face {
+	font-family: "UniversLTStd";
+	src: url("https://db.onlinewebfonts.com/t/dd888cc5c9e136b8b54c2077c7598823.woff2")
+		format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
 }
 
-@layer base {
-	*,
-	*::before,
-	*::after {
-		box-sizing: border-box;
+html,
+body {
+	width: 100%;
+	min-height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: "UniversLTStd", Arial, sans-serif;
+	background: #ffffff;
+	color: #292929;
+}
+
+@keyframes blink {
+	0%,
+	49.99% {
+		background-color: #fb2c36;
+		color: #ffffff;
 	}
 
+	50%,
+	100% {
+		background-color: transparent;
+		color: #000000;
+	}
+}
+
+@media (min-width: 768px) {
 	html,
 	body {
-		width: 100%;
 		height: 100%;
-		margin: 0;
-		padding: 0;
 		overflow: hidden;
 	}
-
-	body {
-		font-family: "Times New Roman", Times, serif;
-		font-weight: 400;
-		-webkit-font-smoothing: antialiased;
-		background: white;
-	}
-}
-
-::selection {
-	background: rgb(99 239 255 / 25%);
 }
